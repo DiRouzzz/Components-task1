@@ -34,8 +34,8 @@ export const App = () => {
 		<div className={styles.app}>
 			<h1 className={styles.pageHeading}>Ввод значения</h1>
 			<p className={styles.noMarginText}>
-				Текущее значение <code>value</code>: "{value}
-				<output className={styles.currentValue}></output>"
+				Текущее значение <code>value</code>: "
+				<output className={styles.currentValue}>{value}</output>"
 			</p>
 			{error && (
 				<div className={styles.error}>
