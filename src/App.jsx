@@ -1,86 +1,65 @@
 import { useState } from 'react';
 import styles from './index.module.css';
 
-function App() {
+export const App = () => {
+	const [error, setError] = useState(false);
 	const [value, setValue] = useState('');
 	const [list, setList] = useState([]);
-	const [error, setError] = useState('');
-	const [isValueValid, setIsValueValid] = useState(false);
 
-	const errorText = <div className={styles.error}>{error}</div>;
-	const marginText = (
-		<p className={styles.noMarginText}>Нет добавленных элементов</p>
-	);
+	const onClickNewMessage = () => {
+		setValue('');
+		setError(false);
+		const input = prompt('')?.trim();
 
-	const formattedDate = () => {
-		return new Date().toLocaleString('ru-RU', {
-			day: '2-digit',
-			month: '2-digit',
-			year: 'numeric',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
-		});
+		input.length < 3 ? setError(true) : setValue(input);
 	};
 
-	const onInputButtonClick = () => {
-		const promptValue = prompt();
-		if (promptValue.length < 3) {
-			setIsValueValid(false);
-			setError('Введенное значение должно содержать минимум 3 символа');
-		} else {
-			setIsValueValid(true);
-			setError('');
-			setValue(promptValue);
-		}
-	};
-
-	const onAddButtonClick = () => {
-		if (isValueValid) {
-			setList(prev => [
-				...prev,
-				{ id: Date.now(), value, date: formattedDate() },
+	const onClickAddList = () => {
+		if (value) {
+			setList(prevList => [
+				...prevList,
+				{ id: Date.now(), date: new Date().toLocaleString('ru-Ru'), value },
 			]);
-			setValue('');
-			setError('');
-			setIsValueValid(false);
 		}
+		setValue('');
 	};
 
-	const items = list.map(({ id, value, date }) => (
+	const itemList = list.map(({ id, date, value }) => (
 		<li className={styles.listItem} key={id}>
-			{date} - {value}
+			{value} - {date}
 		</li>
 	));
 
 	return (
-		<>
-			<div className={styles.app}>
-				<h1 className={styles.pageHeading}>Ввод значения</h1>
-				<p className={styles.noMarginText}>
-					Текущее значение <code>value</code>: "{value}
-					<output className={styles.currentValue}></output>"
-				</p>
-				{error !== '' && errorText}
-				<div className={styles.buttonsContainer}>
-					<button className={styles.button} onClick={onInputButtonClick}>
-						Ввести новое
-					</button>
-					<button
-						className={styles.button}
-						disabled={!isValueValid}
-						onClick={onAddButtonClick}>
-						Добавить в список
-					</button>
+		<div className={styles.app}>
+			<h1 className={styles.pageHeading}>Ввод значения</h1>
+			<p className={styles.noMarginText}>
+				Текущее значение <code>value</code>: "{value}
+				<output className={styles.currentValue}></output>"
+			</p>
+			{error && (
+				<div className={styles.error}>
+					Введенное значение должно содержать минимум 3 символа
 				</div>
-				<div className={styles.listContainer}>
-					<h2 className={styles.listHeading}>Список:</h2>
-					{list.length === 0 && marginText}
-					<ul className={styles.list}>{items}</ul>
-				</div>
+			)}
+			<div className={styles.buttonsContainer}>
+				<button className={styles.button} onClick={onClickNewMessage}>
+					Ввести новое
+				</button>
+				<button
+					className={styles.button}
+					onClick={onClickAddList}
+					disabled={error || !value}>
+					Добавить в список
+				</button>
 			</div>
-		</>
+			<div className={styles.listContainer}>
+				<h2 className={styles.listHeading}>Список:</h2>
+				{!list.length && (
+					<p className={styles.noMarginText}>Нет добавленных элементов</p>
+				)}
+				<ul className={styles.list}>{itemList}</ul>
+			</div>
+		</div>
 	);
-}
-
-export default App;
+};
