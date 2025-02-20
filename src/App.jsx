@@ -55,10 +55,11 @@ export const App = () => {
 			</div>
 			<div className={styles.listContainer}>
 				<h2 className={styles.listHeading}>Список:</h2>
-				{!list.length && (
+				{!list.length ? (
 					<p className={styles.noMarginText}>Нет добавленных элементов</p>
+				) : (
+					<ul className={styles.list}>{itemList}</ul>
 				)}
-				<ul className={styles.list}>{itemList}</ul>
 			</div>
 		</div>
 	);
